@@ -1,0 +1,140 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Configuration",
+    "description": "A configuration file for Sonar",
+    "type": "object",
+    "properties": {
+        "connector": {
+            "description": "The connector to use to gather information",
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "description": "The name of the connector to use",
+                            "type": "string"
+                        },
+                        "options": {
+                            "description": "The options to pass to the connector",
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "environment": {
+            "description": "The environment under Sonar is running: local or live",
+            "type": "string"
+        },
+        "formatters": {
+            "description": "The formatter(s) to use for the results",
+            "oneOf": [
+                {"type": "array"},
+                {"type": "string"}
+            ]
+        },
+        "plugins": {
+            "description": "The plugins to be used with the connector to gather information",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "rulesTimeout": {
+            "description": "Time in milliseconds that a rule has to finish",
+            "type": "number"
+        },
+        "rules": {
+            "description": "The rules to validate",
+            "type": "object",
+            "patternProperties": {
+                "^.+$": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/errorlevelstring"
+                        },
+                        {
+                            "$ref": "#/definitions/errorlevelnumber"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/definitions/errorlevelstring"
+                                    },
+                                    {
+                                        "$ref": "#/definitions/errorlevelnumber"
+                                    },
+                                    {
+                                        "type": "object"
+                                    }
+                                ]
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                        }
+                    ]
+                }
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "browserslist": {
+            "description": "The browsers supported",
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "ignoredUrls": {
+            "description": "The urls to ignore by the rules",
+            "type": "object",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "uniqueItems": true
+            }
+        }
+    },
+    "required": [
+        "connector",
+        "rules"
+    ],
+    "additionalProperties": false,
+    "definitions": {
+        "errorlevelstring": {
+            "type": "string",
+            "enum": [
+                "off",
+                "warning",
+                "error"
+            ]
+        },
+        "errorlevelnumber": {
+            "type": "number",
+            "enum": [
+                0,
+                1,
+                2
+            ]
+        }
+    }
+}

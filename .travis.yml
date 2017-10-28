@@ -1,0 +1,58 @@
+# For more information about the configurations used
+# in this file, please see the Travis CI documentation.
+#
+# https://docs.travis-ci.com
+
+env:
+  global:
+
+    # GITHUB_API_TOKEN
+    - secure: "JR33kTopJFpEwCnFoh6UGgYYBiU480vltMfui3BRpz8G3zc75KctlChOq1lnzZXLm7Yx+7fx+zEOSoffOL2UrW5RnjfZeoWXb1M8IPfQGF7+AVkTm5fI+O7Z2v/Rq40zEDqT8J4Y5G/k+x3Wvsx6bywAKAUU6PO1zbdnZgKBblR63dDgmHWyrdwatpFQK7VF1DtTXtt+j7P4FiBXN2z2FB/6Uidboqf3DNIBH1wmhZXRFLeBpBubLcJR2FdPbzIE/OaU0iJ0kL4Zm0BecoEX4gfKmgZBtuE3Zr83O0UCXj8XkPWDA/m1I3QJB5BNl3pzv+PkmXxI05ioza5JeM5FmHc6I4X3X6x1GHpppXVZkxwe8WYCtgyfKWFcTy9YC2CV+7t0B0dj1ClzV+RS7q4wWdNKc020bzPle4A0u8FaqK4+IE7s9ciC2qr8r3hIkqgX2a4cDKD57V+fiLZG7BHdYLACmzTLx7rRpAnwhuUW9GUcxG0kb8fVgUZjaM/CI0rrf7kHut2gEDzeOpP9I8d13Oj+Ji1+TDZw8sxEopko5pxaoH8LmCnDn4GfA2b8vOMzJnrF2mcbumTwXLUzC8DNZZb8V/b00TZgCxkaeITDzPM9PpLcKNH4C2wTecc6O9vMRsWpEeirK8NaMpdE4GoSh1F2n+j4c0rxnCVM0ijidzk="
+
+    # TRAVIS_API_TOKEN
+    - secure: "IaW1CfeF12i16seRoO3tPQXw0IrF3ve/umcRpwCkmVgaxM0z/q5mJ+VCV25R67idqaGiSfVkdR5qb1q3q8eVKcMBhg/o6s4/7j3GGdm/5ixU5r8TOOfNUadsX2/e/pt4s5YE6+9NgSWshkwk81j9VBmmfQ1ClE0N0xS9uvjzn4YsZ7YSacrM02lEd5riPkVe0slxN0j0eGm50aum75MsPShM1WTGq9WdJyxd/Xpaia+2eBuiRCHu822dASLnoeVL6kyBmE4x86Ss17eR2VseaOS3XKRmFkdIDiPVO85B2EBaeqiyr4fHOqXTQm/WmWGCMSuzpQMRdksSNOCVrN/csmgajnhdye9f2kUdxTduu17TBcYzvkkoP2MRLglINcSCDHspDbI5177oIIBlE6nB9iawUWIIaiRATAmCBpllIGSA/zmvuztQM8YedjHA9E9o0yBXgyaFCHqz9N5fiZldKLU7do2OblPhwQoKzbUhs7+egpuVTnYp76NiqqipRV8gyCDjXCNWtXR/yba3UT5/3PIozL29mxxM41WIuhVhSXgVKhOzDSTYO5z8kB4S8L5dhVY9gLgXi0qnFU4d+Gsiy69lbZ9zXeK0occjMi/b0rkSOwovGmAZU2ArwUh7XRPbFZuCwxwaF/HBqaInsodRveuuOw7RbZh978kQKDf5J9g="
+
+language: node_js
+node_js: node
+
+matrix:
+  include:
+
+    # Build used for checking links
+    # (is automatically run once per week).
+
+    - os: linux
+      if: type = cron
+
+      script:
+        - ./.travis/check-links.sh
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Build used for running the tests on Ubuntu.
+
+    - os: linux
+      if: type != cron
+
+      addons:
+        chrome: stable
+      script:
+        - npm run test-on-travis && ./.travis/trigger-site-update.sh
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Build used for running the tests on macOS.
+
+    - os: osx
+      osx_image: xcode9.1
+      if: type != cron
+
+      addons:
+        chrome: stable
+      script:
+        - npm run test-on-travis
+
+notifications:
+  email:
+    on_failure: always
+    on_success: never

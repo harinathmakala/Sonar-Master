@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "module": "commonjs",
+        "sourceMap": true,
+        "target": "esnext",
+        "declaration": true,
+        "lib": [
+            "es2017",
+            "esnext",
+            "esnext.asynciterable",
+            "dom",
+            "dom.iterable"
+        ],
+        "newLine": "lf"
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "scripts/**/*.ts",
+        "src/**/*.ts",
+        "tests/**/*.ts"
+    ]
+}
